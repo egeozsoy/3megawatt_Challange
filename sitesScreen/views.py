@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from sitesScreen.models import Stuff
 from django.db.models import Sum, Avg
+from django.db import connection
 # Create your views here.
+
 
 def index(request):
 	return render(request , 'sitesScreen/header.html')
@@ -27,8 +29,40 @@ def site(request):
 	myHtmlURL = 'sitesScreen/site.html'
 	return render(request , myHtmlURL , myDatas) 
 
-#by default, django aggregates are used(I asume Sql Queries are faster than python)
+#by default, django is used(I asume Sql Queries are faster than python)
 def summary(request):
+	with connection.cursor() as cursor:
+		 cursor.execute('SELECT Sum(A_Value), Sum(B_Value) FROM sitesScreen_stuff WHERE Site_Name = "Demo Site"')
+		 demo_sum = cursor.fetchone()
+		 cursor.execute('SELECT Sum(A_Value), Sum(B_Value) FROM sitesScreen_stuff WHERE Site_Name = "ABC Site"')
+		 abc_sum = cursor.fetchone()
+		 cursor.execute('SELECT Sum(A_Value), Sum(B_Value) FROM sitesScreen_stuff WHERE Site_Name = "XYZ Site"')
+		 xyz_sum = cursor.fetchone()
+
+	myDatas = {'myDatas': [["Demo Site", demo_sum], ["ABC Site", abc_sum],
+						   ["XYZ Site", xyz_sum]]}
+	print(myDatas)
+	return render(request, 'sitesScreen/summary.html', myDatas)
+
+
+def average(request):
+	with connection.cursor() as cursor:
+		 cursor.execute('SELECT Avg(A_Value), Avg(B_Value) FROM sitesScreen_stuff WHERE Site_Name = "Demo Site"')
+		 demo_avg = cursor.fetchone()
+		 cursor.execute('SELECT Avg(A_Value), Avg(B_Value) FROM sitesScreen_stuff WHERE Site_Name = "ABC Site"')
+		 abc_avg = cursor.fetchone()
+		 cursor.execute('SELECT Avg(A_Value), Avg(B_Value) FROM sitesScreen_stuff WHERE Site_Name = "XYZ Site"')
+		 xyz_avg = cursor.fetchone()
+
+	myDatas = {'myDatas': [["Demo Site", demo_avg], ["ABC Site", abc_avg],
+						   ["XYZ Site", xyz_avg]]}
+	print(myDatas)
+	return render(request, 'sitesScreen/summary.html', myDatas)
+
+
+
+#these are another way of using django for getting the data
+def django_summary(request):
 	demo_site_objects = Stuff.objects.all().filter(Site_Name= 'Demo Site')
 	abc_site_objects = Stuff.objects.all().filter(Site_Name='ABC Site')
 	xyz_site_objects = Stuff.objects.all().filter(Site_Name='XYZ Site')
@@ -43,7 +77,7 @@ def summary(request):
 					["XYZ Site", (xyz_a_sum, xyz_b_sum)]]}
 	return render(request, 'sitesScreen/summary.html', myDatas)
 
-def average(request):
+def django_average(request):
 	demo_site_objects = Stuff.objects.all().filter(Site_Name= 'Demo Site')
 	abc_site_objects = Stuff.objects.all().filter(Site_Name='ABC Site')
 	xyz_site_objects = Stuff.objects.all().filter(Site_Name='XYZ Site')
@@ -58,6 +92,8 @@ def average(request):
 					["XYZ Site", (xyz_a_sum, xyz_b_sum)]]}
 	print(myDatas)
 	return render(request, 'sitesScreen/summary.html', myDatas)
+
+
 
 #this is the python implementation, without using the aggregate functions of django
 def python_summary(request):
