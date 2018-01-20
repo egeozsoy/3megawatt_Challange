@@ -27,7 +27,7 @@ def site(request):
 	myHtmlURL = 'sitesScreen/site.html'
 	return render(request , myHtmlURL , myDatas) 
 
-#by default, django aggregates are used(I asume Sql Queries are faster then python)
+#by default, django aggregates are used(I asume Sql Queries are faster than python)
 def summary(request):
 	demo_site_objects = Stuff.objects.all().filter(Site_Name= 'Demo Site')
 	abc_site_objects = Stuff.objects.all().filter(Site_Name='ABC Site')
@@ -59,13 +59,10 @@ def average(request):
 	print(myDatas)
 	return render(request, 'sitesScreen/summary.html', myDatas)
 
-
-
 #this is the python implementation, without using the aggregate functions of django
 def python_summary(request):
 	objects = Stuff.objects.all()
 	objectsDic = {}
-
 
 	for o in objects:
 		siteName = str(o.Site_Name)
