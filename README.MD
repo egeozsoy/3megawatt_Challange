@@ -1,1 +1,5 @@
-Hey
+This was my first time working with django, so there might be some misunderstandings. Thats why I would love the mention what I exactly did.
+
+I used your website design as much as possible, so that mine would look very similar to yours. I think that was what you have requested. I implemented a database using admin features of django, and entered all 6 datas you have provided. As i was not sure what they were, I chose “Stuff” as my classname. Then I show the appropriate data, depending on the url. I tried to make it as flexible as possible, so on many logic there are no hard codes. Only on the summary page did I hardcode the names.  In the sitesScreen/views are 2 different implementation of Sum and Avg. By default I have used the SQL version, because I assume they are faster. The code in SitesScreen/urls can be changed from views.average to views.python_average for the python implementation.
+
+Because I am not very familiar with Django and its methods, I might have done some redundant coding.(especially in the views.py file). I would love to have your feedback on that.
